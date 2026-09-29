@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assay theme documentation</title>
+<meta name="description" content="Set up and customise the Assay Shopify theme: the ruled sheet, spec cards, split header, pH map, regimen steps, product page, collections, cart and global settings.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --ink: #0d1012; --sheet: #ffffff; --backdrop: #f3f4f5; --panel: #f4f5f6; --muted: #555d65; --line: #80878e; --hair: #d5d8db; --signal: #2f3cff; --signal-tint: #eceeff; }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; font-family: "IBM Plex Sans", system-ui, sans-serif; font-size: 16px; line-height: 1.6; color: var(--ink); background: var(--backdrop); }
+  a { color: inherit; text-underline-offset: 3px; }
+  a:hover { color: var(--signal); }
+  :focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
+  .sheet { max-inline-size: 1240px; margin-inline: auto; background: var(--sheet); border-inline: 1px solid var(--line); }
+  .lbl { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; line-height: 1.4; }
+  .muted { color: var(--muted); }
+  .top { border-block-end: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
+  .top__main { padding: clamp(2rem, 5vw, 4rem) clamp(1.25rem, 3vw, 2.5rem); border-inline-end: 1px solid var(--line); }
+  .top__main .lbl { display: flex; align-items: center; gap: .625rem; }
+  .top__main .lbl::before { content: ""; inline-size: 1.5rem; block-size: 1px; background: var(--signal); }
+  h1, h2, h3 { font-family: "Space Grotesk", system-ui, sans-serif; font-weight: 500; letter-spacing: -.02em; }
+  h1 { font-size: clamp(3.5rem, 11vw, 8rem); line-height: .95; margin: 1.25rem 0 1rem; }
+  .top__main p.lede { max-inline-size: 34rem; color: var(--muted); font-size: 1.125rem; margin: 0; }
+  .top__spec { display: grid; align-content: end; }
+  .spec { margin: 0; display: grid; }
+  .spec div { display: grid; grid-template-columns: 9rem minmax(0, 1fr); border-block-start: 1px solid var(--line); }
+  .spec dt, .spec dd { margin: 0; padding: .75rem 1.25rem; }
+  .spec dt { color: var(--muted); border-inline-end: 1px solid var(--line); }
+  .spec dd { font-family: "IBM Plex Mono", monospace; font-size: .9rem; }
+  .ph-strip { display: block; block-size: 6px; margin: 1rem 1.25rem 1.25rem; border: 1px solid var(--line); position: relative; }
+  .ph-strip::after { content: ""; position: absolute; inset-block: -4px; inset-inline-start: 28%; inline-size: 21%; background: var(--signal-tint); border: 1px solid var(--signal); }
+  .layout { display: grid; grid-template-columns: 15rem minmax(0, 1fr); }
+  nav.toc { position: sticky; top: 0; align-self: start; max-block-size: 100vh; overflow: auto; padding: 1.75rem 1.25rem; font-size: .9rem; }
+  nav.toc ol { list-style: none; padding: 0; margin: .75rem 0 0; display: grid; gap: .1rem; counter-reset: toc; }
+  nav.toc li { counter-increment: toc; }
+  nav.toc a { text-decoration: none; display: flex; gap: .6rem; padding: .3rem 0; min-block-size: 24px; }
+  nav.toc a::before { content: counter(toc, decimal-leading-zero); color: var(--muted); font-family: "IBM Plex Mono", monospace; font-size: .75rem; padding-top: .2rem; }
+  nav.toc a:hover { text-decoration: underline; }
+  main { min-inline-size: 0; border-inline-start: 1px solid var(--line); }
+  main section { padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.25rem, 3vw, 2.5rem); border-block-end: 1px solid var(--line); }
+  h2 { font-size: clamp(1.75rem, 3.4vw, 2.5rem); line-height: 1.1; margin: .4rem 0 1rem; }
+  h3 { font-size: 1.25rem; margin: 1.75rem 0 .5rem; }
+  p, li { max-inline-size: 46rem; }
+  table { inline-size: 100%; border-collapse: collapse; margin: 1rem 0; font-size: .95rem; border: 1px solid var(--line); }
+  th, td { text-align: start; padding: .65rem .85rem; border-block-end: 1px solid var(--hair); border-inline-end: 1px solid var(--hair); vertical-align: top; }
+  th { background: var(--panel); color: var(--muted); font-family: "IBM Plex Mono", monospace; font-weight: 500; font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; }
+  td:first-child { font-weight: 500; min-inline-size: 9rem; }
+  code { font-family: "IBM Plex Mono", monospace; font-size: .85em; background: var(--panel); border: 1px solid var(--hair); padding: .05em .35em; }
+  .note { background: var(--signal-tint); border-inline-start: 3px solid var(--signal); padding: .9rem 1.1rem; margin: 1.25rem 0; max-inline-size: 46rem; }
+  .steps { counter-reset: s; list-style: none; padding: 0; }
+  .steps li { counter-increment: s; position: relative; padding-inline-start: 2.75rem; margin-bottom: .8rem; }
+  .steps li::before { content: counter(s, decimal-leading-zero); position: absolute; inset-inline-start: 0; top: .2rem; font-family: "IBM Plex Mono", monospace; font-size: .8rem; color: var(--signal); }
+  .table-wrap { overflow-x: auto; }
+  .table-wrap table { min-inline-size: 34rem; margin: 0; }
+  .table-wrap { margin: 1rem 0; }
+  footer { background: var(--ink); color: #d9dcdf; padding: 1.5rem clamp(1.25rem, 3vw, 2.5rem); }
+  footer .sheet { background: transparent; border: 0; }
+  @media (max-width: 900px) {
+    .top { grid-template-columns: 1fr; }
+    .top__main { border-inline-end: 0; border-block-end: 1px solid var(--line); }
+    .layout { grid-template-columns: 1fr; }
+    nav.toc { position: static; max-block-size: none; border-block-end: 1px solid var(--line); }
+    main { border-inline-start: 0; }
+    nav.toc ol { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 1rem; }
+  }
+  @media (max-width: 520px) { .spec div { grid-template-columns: 6.5rem minmax(0, 1fr); } nav.toc ol { grid-template-columns: 1fr; } }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <header class="top">
+    <div class="top__main">
+      <p class="lbl">Theme documentation · Version 1.0.0</p>
+      <h1>Assay</h1>
+      <p class="lede">A Shopify theme for formulated products. Every page is a ruled sheet: content tiles edge to edge in a grid of cells, and every product reads like an entry in a table of measurements.</p>
+    </div>
+    <div class="top__spec">
+      <dl class="spec">
+        <div><dt class="lbl">Built on</dt><dd>Shopify Skeleton</dd></div>
+        <div><dt class="lbl">Templates</dt><dd>JSON, all pages</dd></div>
+        <div><dt class="lbl">Layout</dt><dd>Ruled sheet</dd></div>
+        <div><dt class="lbl">Right-to-left</dt><dd>Supported</dd></div>
+      </dl>
+      <span class="ph-strip" aria-hidden="true"></span>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="toc" aria-label="Contents">
+      <p class="lbl muted">Contents</p>
+      <ol>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#install">Install and first steps</a></li>
+        <li><a href="#styles">Styles and colours</a></li>
+        <li><a href="#header">Header and navigation</a></li>
+        <li><a href="#cards">Spec cards</a></li>
+        <li><a href="#specs">Product metafields</a></li>
+        <li><a href="#home">Home page sections</a></li>
+        <li><a href="#product">Product page</a></li>
+        <li><a href="#collections">Collections and search</a></li>
+        <li><a href="#cart">Cart</a></li>
+        <li><a href="#pages">Other pages</a></li>
+        <li><a href="#footer">Footer</a></li>
+        <li><a href="#settings">Theme settings</a></li>
+        <li><a href="#rtl">Languages and RTL</a></li>
+        <li><a href="#quality">Performance and accessibility</a></li>
+        <li><a href="#support">Support</a></li>
+      </ol>
+    </nav>
+
+    <main>
+      <section id="overview">
+        <p class="lbl muted">01</p>
+        <h2>Overview</h2>
+        <p>Assay is built for stores that sell formulated products such as skincare, hair care, supplements or cleaning products, where the numbers matter: the key active, its concentration and its pH. It works just as well with products that have no such data; cards then show a symbol made from the product name.</p>
+        <p>Six systems give the theme its structure. They are part of the layout, not colour or font choices:</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>System</th><th>What it is</th></tr></thead>
+          <tbody>
+            <tr><td>Ruled sheet</td><td>Each section is a bordered frame on a backdrop. Content tiles edge to edge in cells separated by 1&nbsp;px lines. Optional measuring rulers run down both sides of the sheet on wide screens.</td></tr>
+            <tr><td>Split header</td><td>A top row holds the logo, a search field, account and cart. A second row holds the menu as chips, plus a status message. Search opens as a command palette.</td></tr>
+            <tr><td>Spec cards</td><td>Product cards laid out like an element in a table: position number, type and pH across the top, the concentration as the big figure, then the image, name, price and a plus-sign quick add cell.</td></tr>
+            <tr><td>Specimen media</td><td>Every image sits in a square grey cell with registration marks and a grid coordinate such as <code>A1</code> or <code>FIG. 01</code>.</td></tr>
+            <tr><td>pH map</td><td>A chart in the home hero that plots every product in a collection on a pH scale, with a strip showing which part of the 0 to 14 range is magnified.</td></tr>
+            <tr><td>Regimen steps</td><td>A numbered, tabbed routine builder (morning and evening) that adds a whole routine to the cart.</td></tr>
+          </tbody>
+        </table></div>
+        <p>The home page also includes a comparison table (<em>Compare actives</em>) and the product page has a <em>Product comparison</em> section that lines the product up against related products.</p>
+      </section>
+
+      <section id="install">
+        <p class="lbl muted">02</p>
+        <h2>Install and first steps</h2>
+        <ol class="steps">
+          <li>In Shopify admin, go to <strong>Online Store → Themes</strong>, add Assay to your library, and click <strong>Customize</strong>.</li>
+          <li>Upload your logo under <strong>Theme settings → Logo and favicon</strong>. With no logo, the store name is shown as a text wordmark, set in the <em>Text logo</em> font.</li>
+          <li>In the <strong>Header</strong> section, choose your menu. It uses <code>main-menu</code> by default. Set the <em>Tag beside the logo</em> (a small boxed label such as “Vol. 1”) or leave it empty.</li>
+          <li>Create the product metafields described in <a href="#specs">Product metafields</a> and fill them in on your products. Without them the theme still works; cards show a symbol instead of a concentration.</li>
+          <li>On the home page, click each section and choose your own products, collections, blog and pages. Empty slots show placeholders until you do.</li>
+          <li>Preview on mobile using the device toggle at the top of the editor, then click <strong>Save</strong>.</li>
+        </ol>
+        <div class="note">On a new install the home page keeps its structure (readout band, hero, formula table, comparison, regimen builder, skin type selector, journal and FAQ) but every product, collection, image and link slot is empty and shows a neutral placeholder.</div>
+      </section>
+
+      <section id="styles">
+        <p class="lbl muted">03</p>
+        <h2>Styles and colours</h2>
+        <p>The theme ships one style, <strong>Assay</strong>: white sheet on a light grey backdrop, near-black text, a single blue signal colour, square corners and hairline grid lines. Change it under <strong>Theme settings → Colors</strong>:</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Group</th><th>Settings</th></tr></thead>
+          <tbody>
+            <tr><td>Sheet</td><td>Sheet background, backdrop outside the sheet, text, secondary text, grid lines (keep at least 3:1 contrast with the sheet)</td></tr>
+            <tr><td>Specimen cells</td><td>Image cell background, panel background (readout bands and table headers)</td></tr>
+            <tr><td>Signal</td><td>Signal colour and the text colour on it. Used for active states, pH chips and highlights.</td></tr>
+            <tr><td>Buttons</td><td>Primary and secondary button and text colours</td></tr>
+            <tr><td>Status</td><td>Sale price, in stock, rating</td></tr>
+            <tr><td>Tags</td><td>Sale, New, Selling fast and Sold out tag colours</td></tr>
+          </tbody>
+        </table></div>
+        <p>The <em>Stats band</em> has its own three looks (<em>Sheet</em>, <em>Panel</em>, <em>Ink</em>). Shapes are square by default; add rounding under <a href="#settings">Shapes</a>. The default colours meet WCAG AA contrast; check contrast again if you change them.</p>
+      </section>
+
+      <section id="header">
+        <p class="lbl muted">04</p>
+        <h2>Header and navigation</h2>
+        <p>On desktop the header has two rows inside the sheet frame. The top row holds the logo (with the optional boxed tag), a search field that shows the <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>K</kbd> shortcut, an optional readout text, the account link (when customer accounts are on) and the cart with its count. The second row is the category bar: your menu as chips and a status message on the right.</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Setting</th><th>What it does</th></tr></thead>
+          <tbody>
+            <tr><td>Menu</td><td>The menu shown in the category bar and the mobile sheet.</td></tr>
+            <tr><td>Sticky header</td><td>Keeps the header at the top while scrolling.</td></tr>
+            <tr><td>Tag beside the logo</td><td>A short boxed label next to the logo.</td></tr>
+            <tr><td>Readout beside the search field</td><td>A short line of text on wide screens.</td></tr>
+            <tr><td>Label</td><td>The text at the start of the category bar (default “Browse”).</td></tr>
+            <tr><td>Show product counts on collection links</td><td>Adds a small two-digit count to chips that link to a collection.</td></tr>
+            <tr><td>Show collection images in menu panels</td><td>Menu items with sub-links open a panel of cells. Each cell shows the linked collection's image (or the linked product's image), its product count and third-level links.</td></tr>
+            <tr><td>Status message</td><td>A short line with a pulsing dot on the right of the category bar, for example a shipping note.</td></tr>
+          </tbody>
+        </table></div>
+        <h3>Search palette</h3>
+        <p>The search field opens a palette that fills with live results as the customer types: products (with concentration, key active, pH and optional price), search suggestions, collections, pages and articles. You can add a <em>Suggested links</em> menu, shown before typing, and change the placeholder text under <a href="#settings">Search</a>. Escape closes it and returns focus to where it was opened.</p>
+        <h3>On mobile</h3>
+        <p>The top row becomes logo, cart and menu button, with the search field on its own row below. The menu opens as a bottom sheet of numbered cells; items with sub-links expand in place.</p>
+      </section>
+
+      <section id="cards">
+        <p class="lbl muted">05</p>
+        <h2>Spec cards</h2>
+        <p>Every product grid uses the same card, in the same ruled cell grid. From top to bottom:</p>
+        <ol>
+          <li>A head with the position number and product type on the left, and a pH chip with a small 0 to 14 scale on the right.</li>
+          <li>The concentration as the large figure, with the key active underneath. If a product has no concentration, a two-letter symbol made from its name is shown instead.</li>
+          <li>A square specimen cell with the product image, a grid coordinate (<code>A1</code>, <code>B2</code>…) and tags such as sale percentage, New and Selling fast.</li>
+          <li>The name and price, and a plus-sign cell in the corner: it adds single-variant products straight to the cart, opens quick view for products with options, and turns into a disabled minus sign when sold out.</li>
+        </ol>
+        <p>Set what appears under <strong>Theme settings → Spec cards</strong> and <strong>Specimen images</strong>:</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Setting</th><th>Options</th></tr></thead>
+          <tbody>
+            <tr><td>Metafield namespace</td><td>Where the card reads concentration, key active and pH. Default <code>custom</code>.</td></tr>
+            <tr><td>Show position number / product type / pH chip</td><td>Turn each part of the head on or off.</td></tr>
+            <tr><td>Show rating</td><td>Reads the <code>reviews.rating</code> metafield that review apps write. Off by default.</td></tr>
+            <tr><td>Show second image on hover</td><td>Swaps to the second product image on hover.</td></tr>
+            <tr><td>Show quick add cell</td><td>Shows or hides the plus-sign cell.</td></tr>
+            <tr><td>Sale as percentage</td><td>Shows “-25%” on the tag instead of “Sale”.</td></tr>
+            <tr><td>Product tag for New / Selling fast</td><td>Products carrying these tags (defaults <code>new</code> and <code>selling-fast</code>) get the matching tag.</td></tr>
+            <tr><td>Image fit</td><td><em>Fit</em> shows the whole product; <em>Fill</em> crops to the square.</td></tr>
+            <tr><td>Registration marks / grid coordinates</td><td>The corner marks and labels on every image cell.</td></tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <section id="specs">
+        <p class="lbl muted">06</p>
+        <h2>Product metafields</h2>
+        <p>Spec cards, the pH map, the spec table, the comparison tables and the stats band read these product metafields. Create them under <strong>Settings → Custom data → Products</strong> as single-line text, with the namespace set in <a href="#cards">Spec cards → Metafield namespace</a> (default <code>custom</code>, so the full key is <code>custom.ph</code> and so on):</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Key</th><th>Example</th><th>Used for</th></tr></thead>
+          <tbody>
+            <tr><td>concentration</td><td>10%</td><td>The big figure on cards; comparison tables; spec table</td></tr>
+            <tr><td>key_ingredient</td><td>Niacinamide</td><td>Card, spec table, tables, regimen, cart line</td></tr>
+            <tr><td>ph</td><td>5.5</td><td>pH chip, pH map, spec table scale, stats, collection readout. Use a plain number.</td></tr>
+            <tr><td>skin_type</td><td>Oily, combination</td><td>Spec table, comparison; matched by the Skin type selector</td></tr>
+            <tr><td>texture</td><td>Water serum</td><td>Spec table, comparison, product gallery caption</td></tr>
+          </tbody>
+        </table></div>
+        <p>Rows with no value are hidden. The theme also reads the standard <code>reviews.rating</code> metafield for ratings.</p>
+      </section>
+
+      <section id="home">
+        <p class="lbl muted">07</p>
+        <h2>Home page sections</h2>
+        <p>The home page is built from these sections; add, remove and reorder them freely. Sections are numbered (“§ 03”) automatically in the order they appear.</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Section</th><th>What it does and its settings</th></tr></thead>
+          <tbody>
+            <tr><td>Stats band</td><td>A row of readouts. Settings: label, collection to measure, style (Sheet, Panel, Ink). Blocks (up to 6): <em>Stat</em> with a value source (custom text, number of products, pH range, average rating, number of key actives) and a label. Figures read the chosen collection; a stat with no data shows a dash.</td></tr>
+            <tr><td>Spec hero</td><td>Eyebrow, large heading, text, two buttons, a featured product with its spec table and quick add, and the pH map. Settings include <em>Use as the page's main heading</em>, the label above the product, an image reference label, <em>Show pH map</em>, the collection to plot and where the magnified range starts (pH 0 to 11; it spans 3 pH units).</td></tr>
+            <tr><td>Formula grid</td><td>A grid of spec cards from a collection. Settings: heading, subheading, collection, maximum products (2 to 24), columns (3 to 6), link label, and <em>Show the key cell</em> with its name. The key cell is the first tile, annotating each part of a card.</td></tr>
+            <tr><td>Compare actives</td><td>A sortable table of a collection or of products you pick: formula, key active, concentration, pH, skin type, texture, price, and a quick add or options button. Settings: heading, subheading, collection or products, maximum rows (2 to 24), footnote, link.</td></tr>
+            <tr><td>Regimen builder</td><td>Numbered steps in morning and evening tabs. Blocks (up to 10): <em>Step</em> with routine (morning, evening or both), step name, product, dose, timing and an instruction. Shows the routine total and an <em>Add routine to cart</em> button (setting: <em>Show add routine to cart button</em>). Tab labels are editable.</td></tr>
+            <tr><td>Skin type selector</td><td>Chips for skin profiles. Each <em>Skin profile</em> block (up to 6) has a label, match words, a description, a target pH and “look for” text. Products in the chosen collection whose <code>skin_type</code> metafield contains a match word are shown as cards (up to 12 per profile).</td></tr>
+            <tr><td>Journal grid</td><td>Latest articles from a blog: heading, subheading, blog, number of posts (2 to 6), columns (2 to 4), excerpt on or off, link label.</td></tr>
+            <tr><td>FAQ table</td><td>Questions and answers in two columns. Blocks (up to 40): <em>Group heading</em> and <em>Question</em>. Settings: heading, subheading, link, <em>Use as the page's main heading</em>, and <em>Add FAQ structured data for search engines</em>.</td></tr>
+            <tr><td>Claims grid</td><td>Up to 8 <em>Claim</em> blocks, each with a figure, title, text and optional icon (molecule, leaf, shield, earth, sparkle, truck, return, box, clock). Also used on the product and About pages.</td></tr>
+            <tr><td>Specimen with text</td><td>An image next to text, with a caption label, a heading, text and a button, plus up to 8 <em>Spec row</em> blocks (label and value). Settings: image first, image label and reference, spacing.</td></tr>
+            <tr><td>Product comparison, Related formulas</td><td>Product page sections; see <a href="#product">Product page</a>.</td></tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <section id="product">
+        <p class="lbl muted">08</p>
+        <h2>Product page</h2>
+        <p>The product page is a spec sheet: a two-column media grid on the left and a specification column on the right. The specification column can stay in view while the customer scrolls (setting: <em>Keep the spec column in view while scrolling</em>). On mobile the images become a swipeable strip with dots. Click an image to open it full screen. Images, videos, external videos and 3D models are supported. With grid coordinates on, each image is labelled <code>FIG. 01</code>, <code>FIG. 02</code>… On desktop the media grid stays in view beside the specification column.</p>
+        <p>The right column is made of blocks that you can reorder, remove and repeat where allowed: Text (custom text, vendor or product type), Title, Rating, Tags, Price, Spec table, Description (with optional word limit), Stock status, Variant picker, Buy buttons, Perks, Pickup availability, SKU, Tab, Share, Custom Liquid and app blocks.</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Block</th><th>Settings</th></tr></thead>
+          <tbody>
+            <tr><td>Spec table</td><td>Heading, <em>Show pH scale</em> and <em>Show SKU row</em>. Rows: concentration, key active, pH, skin type, texture (from <a href="#specs">metafields</a>).</td></tr>
+            <tr><td>Stock status</td><td>Shows the quantity in stock (optional) and a low-stock message under a threshold you choose (1 to 50).</td></tr>
+            <tr><td>Buy buttons</td><td>Quantity selector and dynamic checkout button can each be turned off.</td></tr>
+            <tr><td>Perks</td><td>Up to three icon and text pairs in one row (box, truck, dollar, return, shield, leaf, gift).</td></tr>
+            <tr><td>Tab</td><td>Consecutive tab blocks form one tab set at the position of the first. Each has a heading and either rich text, the product description, or the content of a page you choose.</td></tr>
+            <tr><td>Share</td><td>Share link, and an optional “Ask a question” link.</td></tr>
+          </tbody>
+        </table></div>
+        <p>Options appear as a row of buttons; options named Color, Colour or Shade also show a small swatch chip, using the swatch colour or image you set in Shopify (or the colour name). Unavailable values are struck through. Changing a variant updates the price, tags, stock, image and page address without reloading. Sold-out variants disable the add button. Below the spec sheet, the default template adds:</p>
+        <ul>
+          <li><strong>Product comparison</strong>: the current product and related products (from Shopify's Search &amp; Discovery app) side by side, with the same columns as <em>Compare actives</em>. Settings: heading, subheading, readout, label for this product, number of related products (1 to 6), type (related or complementary) and a fallback collection.</li>
+          <li><strong>Claims grid</strong> and <strong>FAQ table</strong>, which you can edit or remove.</li>
+        </ul>
+        <p>You can also add <strong>Related formulas</strong> (product recommendations as spec cards) to the product, cart or any other page. Settings: heading, subheading, maximum products (2 to 10), columns (2 to 6), type and fallback collection.</p>
+      </section>
+
+      <section id="collections">
+        <p class="lbl muted">09</p>
+        <h2>Collections and search</h2>
+        <p>The collection header shows the title and description beside a readout of the number of products, the pH range and the average rating. Below it, a toolbar holds the product count, filters, a grid/table switch and sort. Configure which filters appear in the <strong>Search &amp; Discovery</strong> app.</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Setting</th><th>What it does</th></tr></thead>
+          <tbody>
+            <tr><td>Enable filtering / sorting</td><td>Filters appear as chips in the toolbar on desktop (price as a small popover) and open in a bottom sheet on mobile. Results update without reloading and the address keeps the choices. Active filters show as removable chips with a <em>Clear all</em>.</td></tr>
+            <tr><td>Default view</td><td><em>Grid of spec cards</em> or <em>Comparison table</em>. Customers can switch; their choice is remembered in their browser.</td></tr>
+            <tr><td>Products per page (8 to 48)</td><td>Pagination links update the results in place.</td></tr>
+            <tr><td>Columns on desktop (3 to 6), on mobile (1 or 2)</td><td>Grid density.</td></tr>
+            <tr><td>Show collection description</td><td>Shows the description under the title.</td></tr>
+          </tbody>
+        </table></div>
+        <p>When no product matches, an empty state offers to clear the filters. The <strong>Collections</strong> page (<em>Collections index</em>) shows each collection as a cell with a two-letter symbol and its product count. Choose which collections appear, sort them (alphabetically, most or fewest products, newest, oldest), set columns (2 to 6) and choose whether empty collections are hidden.</p>
+        <p><strong>Search results</strong> use the same cards and filters (results per page 8 to 48, columns 3 to 6) and a sort selector. With no results the page suggests checking the spelling. Search suggestions in the header palette can be turned off, or shown without prices, under <a href="#settings">Theme settings → Search</a>.</p>
+      </section>
+
+      <section id="cart">
+        <p class="lbl muted">10</p>
+        <h2>Cart</h2>
+        <p>The cart page is laid out as a report: a header with the date, number of lines, number of units and status, then a numbered table of lines with the key active, price, quantity and total. The drawer shows the same lines in a narrower form.</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Setting</th><th>What it does</th></tr></thead>
+          <tbody>
+            <tr><td>Cart type</td><td><em>Drawer</em> slides in after add to cart and from the header cart; <em>Page</em> goes to the cart page.</td></tr>
+            <tr><td>Free shipping threshold</td><td>Draws a progress meter toward free shipping. Set to 0 to hide it.</td></tr>
+            <tr><td>Gift wrap product</td><td>Create a product (for example “Gift wrap”) and select it. A checkbox on the cart page adds or removes it.</td></tr>
+            <tr><td>Enable order note</td><td>A collapsible note field on the cart page; it saves as the customer types.</td></tr>
+            <tr><td>Enable shipping estimator</td><td>Customers enter a country, region and postal code to see shipping rates.</td></tr>
+            <tr><td>Show accelerated checkout buttons</td><td>In the cart section settings.</td></tr>
+          </tbody>
+        </table></div>
+        <p>An empty cart shows a message, a link to keep shopping and, if you set a fallback collection in the <em>Related formulas</em> section, suggested products.</p>
+      </section>
+
+      <section id="pages">
+        <p class="lbl muted">11</p>
+        <h2>Other pages</h2>
+        <p>Assign a template to a page under <strong>Online Store → Pages → Theme template</strong>.</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Template</th><th>What it contains</th></tr></thead>
+          <tbody>
+            <tr><td>page</td><td>Plain page with a label above the title, optional updated date and padding settings.</td></tr>
+            <tr><td>page.about</td><td>Page header, <em>Specimen with text</em> and <em>Claims grid</em>.</td></tr>
+            <tr><td>page.contact</td><td>Contact form (name, email, phone, product, message) with up to 4 detail blocks (email, location, hours, help).</td></tr>
+            <tr><td>page.faq</td><td>A <em>FAQ table</em> used as the page heading.</td></tr>
+            <tr><td>page.policies</td><td>A document layout for policy text.</td></tr>
+            <tr><td>Journal (blog)</td><td>Grid of journal cards with a topic filter (tags). Settings: posts per page (3 to 24), columns, excerpts, topic filter.</td></tr>
+            <tr><td>Journal article</td><td>Large image, title, details panel (published, author, reading time, topic) and a section of products, by default from a collection you choose. Setting: image reference label, show image, show author.</td></tr>
+            <tr><td>404, password, gift card</td><td>404 with a search field; password page with newsletter sign-up and an optional image; a standalone gift card page with QR code.</td></tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <section id="footer">
+        <p class="lbl muted">12</p>
+        <h2>Footer</h2>
+        <p>The footer is a row of numbered cells (up to 8 blocks): <em>Text</em> (heading, text, optional link), <em>Menu</em> (any menu, with collection counts) and <em>Newsletter</em> (one only; subscribers are saved as customers tagged <code>newsletter</code>). Each block has a width. Below the cells, a strip holds the country/currency selector, the language selector, a policy menu, social links and payment icons; each can be turned off. <em>Show large wordmark</em> prints your store name (or text you enter) across the bottom, with a sheet note beside the copyright.</p>
+      </section>
+
+      <section id="settings">
+        <p class="lbl muted">13</p>
+        <h2>Theme settings</h2>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Group</th><th>Includes</th></tr></thead>
+          <tbody>
+            <tr><td>Logo and favicon</td><td>Logo, logo width (60 to 300 px), favicon</td></tr>
+            <tr><td>Colors</td><td>See <a href="#styles">Styles and colours</a></td></tr>
+            <tr><td>Typography</td><td>Heading font, heading size (80 to 130%), heading letter spacing (normal, tight, tighter), body font, body size (90 to 120%), data and labels font (a monospaced face works best), text logo font</td></tr>
+            <tr><td>Layout</td><td>Sheet width (narrow 1200, standard 1360, wide 1560, full screen), margin around the sheet, cell padding, section padding, measuring rulers</td></tr>
+            <tr><td>Shapes</td><td>Corner radius of grid cells, image cells, buttons and inputs (all 0 by default)</td></tr>
+            <tr><td>Specimen images</td><td>Image fit, registration marks, grid coordinates</td></tr>
+            <tr><td>Spec cards</td><td>See <a href="#cards">Spec cards</a></td></tr>
+            <tr><td>Cart</td><td>Cart type, free shipping threshold, gift wrap product, order note, shipping estimator</td></tr>
+            <tr><td>Social media</td><td>Facebook, X, Instagram, TikTok, Pinterest and YouTube links, shown in the footer</td></tr>
+            <tr><td>Search</td><td>Search suggestions, prices in suggestions, search field text, suggested links menu</td></tr>
+            <tr><td>Animation</td><td>Reveal content on scroll, magnify images on hover</td></tr>
+          </tbody>
+        </table></div>
+        <p>Every section also has its own spacing and copy settings in the editor; the theme's own labels, such as “Conc.”, “Key active” and “Specimen”, are translatable under <strong>Edit default theme content</strong>.</p>
+      </section>
+
+      <section id="rtl">
+        <p class="lbl muted">14</p>
+        <h2>Languages and right-to-left</h2>
+        <p>All text the theme prints comes from the locale file, so it can be translated in the editor (<strong>Online Store → Themes → … → Edit default theme content</strong>) or with Shopify's Translate &amp; Adapt app. The theme ships English. When the storefront language is Arabic, Hebrew, Persian or Urdu, the page direction switches to right-to-left, layout properties are logical so the sheet mirrors, and directional arrows flip.</p>
+      </section>
+
+      <section id="quality">
+        <p class="lbl muted">15</p>
+        <h2>Performance and accessibility</h2>
+        <ul>
+          <li>No third-party scripts and no bundled libraries: one shared stylesheet and one JavaScript file, with component styles kept beside their markup and served by Shopify as a single compiled file.</li>
+          <li>Images use responsive sizes; the first image on a page loads eagerly with high priority and the rest load lazily. Body and heading fonts are preloaded.</li>
+          <li>Reveal-on-scroll only affects content below the first screen, and all motion is switched off for visitors who ask their device for reduced motion.</li>
+          <li>Skip link, one main heading per page, labelled form fields, focus rings, focus trapped inside open drawers and dialogs, Escape to close them, and focus returned to the control that opened them. Menu panels open on focus and with the down arrow key.</li>
+          <li>Colour defaults meet WCAG AA contrast; buttons and controls are at least 24 px.</li>
+        </ul>
+      </section>
+
+      <section id="support" style="border-block-end:0">
+        <p class="lbl muted">16</p>
+        <h2>Support</h2>
+        <p>Need help with Assay? Contact us through the support link on the theme's page in the Shopify Theme Store. Please include your store URL and, if possible, a screenshot or the steps that lead to the problem.</p>
+        <p class="muted">Assay is built on Shopify's Skeleton theme, used under its licence. Updates are released through the Shopify Theme Store; to update, add the new version and copy over your customisations.</p>
+      </section>
+    </main>
+  </div>
+</div>
+<footer><div class="sheet lbl">Assay theme documentation · Version 1.0.0</div></footer>
+</body>
+</html>
